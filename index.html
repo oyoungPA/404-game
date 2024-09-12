@@ -2,14 +2,30 @@
     #gameCanvas {
       margin: 20px auto;
       display: block;
+      background-image: url("https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/DALL_E%202024-09-12%2009.25.18%20-%20A%20retro%208-bit%20style%20background%20for%20a%20duck%20hunting%20game%20similar%20to%20classic%20arcade%20style.%20The%20scene%20features%20a%20bright%20blue%20sky%20with%20no%20clouds,%20a%20few%20sim.webp?updatedAt=1726151927915");
+      background-size: 108%;
+      background-position: 0 center;
+      background-repeat: repeat-x;
+      animation: moveBackground 16s linear infinite;
     }
+  
+    @keyframes moveBackground {
+      0% {
+        background-position: 100% center;
+      }
+      100% {
+        background-position: 0 center;
+      }
+    }
+  
     .message {
       display: none;
     }
     .ui {
       margin-top: 10px;
     }
-    .ui .score, .ui #timer {
+    .ui .score,
+    .ui #timer {
       font-size: 24px;
       font-weight: bold;
       margin: 10px;
@@ -19,7 +35,6 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
       color: #fff;
       display: flex;
       justify-content: center;
@@ -37,7 +52,6 @@
     }
   
     canvas {
-      background-color: #333;
       border: 2px solid #fff;
     }
   
@@ -52,7 +66,8 @@
       color: black;
     }
   
-    #restartButton, #homeButton {
+    #restartButton,
+    #homeButton {
       margin-top: 10px;
       padding: 10px 20px;
       background-color: #cc0c2c;
@@ -63,10 +78,10 @@
       text-decoration: none;
     }
   
-    #restartButton:hover, #homeButton:hover {
-      background-color: #b00000;
+    #restartButton:hover,
+    #homeButton:hover {
+      background-color: pink;
     }
-  
   </style>
   
   <h1>404 Page</h1>
@@ -75,7 +90,7 @@
   
   <div class="ui">
     <div class="score">Targets hit: <span id="score">0</span></div>
-    <div id="timer">Time left: 30s</div>
+    <div id="timer">Time left: 15s</div>
   </div>
   
   <div class="message">
@@ -94,64 +109,80 @@
     let score = 0;
     let isGameOver = false;
     let crosshair = { x: 0, y: 0 };
-    let timeLeft = 30; 
-    let targetCount = 0; 
+    let timeLeft = 15;
+    let targetCount = 0;
     const targetGoal = 10;
+  
+    const duckImage = new Image();
+    duckImage.src = 'https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846';
   
     function createTarget() {
       const target = {
         x: Math.random() * (canvas.width - 50),
         y: Math.random() * (canvas.height - 50),
-        size: 40,
+        width: 40,
+        height: 40,
         hit: false,
-        lifespan: Math.random() * 3000 + 1000 
+        lifespan: Math.random() * 1500 + 1000,
       };
   
       targets.push(target);
-      setTimeout(() => removeTarget(target), target.lifespan); 
+      setTimeout(() => removeTarget(target), target.lifespan);
     }
   
     function removeTarget(target) {
       if (!target.hit) {
-        targets.splice(targets.indexOf(target), 1);
+        const index = targets.indexOf(target);
+        if (index > -1) {
+          targets.splice(index, 1);
+        }
       }
     }
   
     function drawTargets() {
-      targets.forEach(target => {
+      targets.forEach((target) => {
         if (!target.hit) {
-          ctx.fillStyle = "red";
-          ctx.beginPath();
-          ctx.arc(target.x, target.y, target.size, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.drawImage(duckImage, target.x, target.y, target.width, target.height);
         }
       });
     }
   
+    // function drawCrosshair() {
+    //   ctx.strokeStyle = "white";
+    //   ctx.beginPath();
+    //   ctx.arc(crosshair.x, crosshair.y, 15, 0, Math.PI * 2);
+    //   ctx.moveTo(crosshair.x - 20, crosshair.y);
+    //   ctx.lineTo(crosshair.x + 20, crosshair.y);
+    //   ctx.moveTo(crosshair.x, crosshair.y - 20);
+    //   ctx.lineTo(crosshair.x, crosshair.y + 20);
+    //   ctx.stroke();
+    // }
+  
+    const crosshairImage = new Image();
+    crosshairImage.src = 'https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/ACSS-RAPTOR-M2.png?updatedAt=1726176843343';  // Replace with your crosshair image URL
+  
     function drawCrosshair() {
-      ctx.strokeStyle = "white";
-      ctx.beginPath();
-      ctx.arc(crosshair.x, crosshair.y, 15, 0, Math.PI * 2); 
-      ctx.moveTo(crosshair.x - 20, crosshair.y);
-      ctx.lineTo(crosshair.x + 20, crosshair.y); 
-      ctx.moveTo(crosshair.x, crosshair.y - 20);
-      ctx.lineTo(crosshair.x, crosshair.y + 20); 
-      ctx.stroke();
+      const crosshairWidth = 30;  // Customize size to fit the image
+      const crosshairHeight = 30; // Customize size to fit the image
+  
+      // Draw the crosshair image centered at the mouse position
+      ctx.drawImage(crosshairImage, crosshair.x - crosshairWidth / 2, crosshair.y - crosshairHeight / 2, crosshairWidth, crosshairHeight);
     }
   
+  
     function checkHit(x, y) {
-      targets.forEach(target => {
-        const distance = Math.sqrt((x - target.x) ** 2 + (y - target.y) ** 2);
-        if (distance < target.size && !target.hit) {
+      targets.forEach((target) => {
+        if (x >= target.x && x <= target.x + target.width &&
+            y >= target.y && y <= target.y + target.height && !target.hit) {
           setTimeout(() => {
             target.hit = true;
             score++;
-            document.getElementById("score").innerText = score; 
-            targets.splice(targets.indexOf(target), 1); 
+            document.getElementById("score").innerText = score;
+            targets.splice(targets.indexOf(target), 1);
             if (score >= targetGoal) {
-              endGame(true); 
+              endGame(true);
             }
-          }, 300); 
+          }, 150);
         }
       });
     }
@@ -172,7 +203,7 @@
     });
   
     function simulateShot(x, y) {
-      ctx.fillStyle = "yellow"; 
+      ctx.fillStyle = "yellow";
       ctx.beginPath();
       ctx.arc(x, y, 5, 0, Math.PI * 2);
       ctx.fill();
@@ -186,10 +217,10 @@
       const timerInterval = setInterval(() => {
         if (timeLeft > 0) {
           timeLeft--;
-          document.getElementById("timer").innerText = `Time left: ${timeLeft}s`; 
+          document.getElementById("timer").innerText = `Time left: ${timeLeft}s`;
         } else {
           clearInterval(timerInterval);
-          endGame(false); 
+          endGame(false);
         }
       }, 1000);
     }
@@ -198,20 +229,22 @@
       isGameOver = true;
       document.querySelector(".message").style.display = "block";
       canvas.style.display = "none";
-      document.querySelector(".message h2").innerText = won ? "You hit all targets!" : "Time's up! Try again.";
+      document.querySelector(".message h2").innerText = won
+        ? "You hit all targets!"
+        : "Time's up! Try again.";
     }
   
     document.getElementById("restartButton").addEventListener("click", () => {
       score = 0;
-      timeLeft = 30;
+      timeLeft = 15;
       isGameOver = false;
       targets = [];
-      document.getElementById("score").innerText = score; 
+      document.getElementById("score").innerText = score;
       canvas.style.display = "block";
       document.querySelector(".message").style.display = "none";
       startGame();
     });
-  
+    
     function drawGame() {
       if (!isGameOver) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -222,11 +255,30 @@
     }
   
     function startGame() {
+      if (duckImage.complete) {
+        initializeGame();
+      } else {
+        duckImage.onload = () => {
+          initializeGame();
+        };
+      }
+    }
+  
+    function initializeGame() {
+      score = 0;
+      timeLeft = 15;
+      isGameOver = false;
+      targets = [];
+      document.getElementById("score").innerText = score;
+      canvas.style.display = "block";
+      document.querySelector(".message").style.display = "none";
+  
       startTimer();
-      setInterval(createTarget, 1000);
+      createTarget(); 
+      setInterval(createTarget, 1000); 
       drawGame();
     }
   
-    startGame();
-  
+    window.onload = startGame;
   </script>
+  

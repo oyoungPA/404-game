@@ -114,7 +114,8 @@
     const targetGoal = 10;
   
     const duckImage = new Image();
-    duckImage.src = 'https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846';
+    duckImage.src =
+      "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846";
   
     function createTarget() {
       const target = {
@@ -142,38 +143,37 @@
     function drawTargets() {
       targets.forEach((target) => {
         if (!target.hit) {
-          ctx.drawImage(duckImage, target.x, target.y, target.width, target.height);
+          ctx.drawImage(
+            duckImage,
+            target.x,
+            target.y,
+            target.width,
+            target.height,
+          );
         }
       });
     }
   
-    // function drawCrosshair() {
-    //   ctx.strokeStyle = "white";
-    //   ctx.beginPath();
-    //   ctx.arc(crosshair.x, crosshair.y, 15, 0, Math.PI * 2);
-    //   ctx.moveTo(crosshair.x - 20, crosshair.y);
-    //   ctx.lineTo(crosshair.x + 20, crosshair.y);
-    //   ctx.moveTo(crosshair.x, crosshair.y - 20);
-    //   ctx.lineTo(crosshair.x, crosshair.y + 20);
-    //   ctx.stroke();
-    // }
-  
-    const crosshairImage = new Image();
-    crosshairImage.src = 'https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/ACSS-RAPTOR-M2.png?updatedAt=1726176843343';  // Replace with your crosshair image URL
-  
     function drawCrosshair() {
-      const crosshairWidth = 30;  // Customize size to fit the image
-      const crosshairHeight = 30; // Customize size to fit the image
-  
-      // Draw the crosshair image centered at the mouse position
-      ctx.drawImage(crosshairImage, crosshair.x - crosshairWidth / 2, crosshair.y - crosshairHeight / 2, crosshairWidth, crosshairHeight);
+      ctx.strokeStyle = "white";
+      ctx.beginPath();
+      ctx.arc(crosshair.x, crosshair.y, 15, 0, Math.PI * 2);
+      ctx.moveTo(crosshair.x - 20, crosshair.y);
+      ctx.lineTo(crosshair.x + 20, crosshair.y);
+      ctx.moveTo(crosshair.x, crosshair.y - 20);
+      ctx.lineTo(crosshair.x, crosshair.y + 20);
+      ctx.stroke();
     }
-  
   
     function checkHit(x, y) {
       targets.forEach((target) => {
-        if (x >= target.x && x <= target.x + target.width &&
-            y >= target.y && y <= target.y + target.height && !target.hit) {
+        if (
+          x >= target.x &&
+          x <= target.x + target.width &&
+          y >= target.y &&
+          y <= target.y + target.height &&
+          !target.hit
+        ) {
           setTimeout(() => {
             target.hit = true;
             score++;
@@ -244,7 +244,7 @@
       document.querySelector(".message").style.display = "none";
       startGame();
     });
-    
+  
     function drawGame() {
       if (!isGameOver) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -274,8 +274,8 @@
       document.querySelector(".message").style.display = "none";
   
       startTimer();
-      createTarget(); 
-      setInterval(createTarget, 1000); 
+      createTarget();
+      setInterval(createTarget, 1000);
       drawGame();
     }
   

@@ -127,6 +127,8 @@
     const duckImage = new Image();
     duckImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846";
 
+    const splatSound = new Audio("https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/splat2.m4a?updatedAt=1726263855116");
+
     duckImage.onload = function() {
       console.log("Duck image loaded");
       startGame();
@@ -135,6 +137,18 @@
     duckImage.onerror = function() {
       console.error("Failed to load duck image");
     };
+
+    
+  const bloodImage = new Image();
+  bloodImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/Untitled_design__3_-removebg-preview.png?updatedAt=1726245472895";
+
+  bloodImage.onload = function() {
+    console.log("Blood image loaded successfully");
+  };
+
+  bloodImage.onerror = function() {
+    console.error("Failed to load blood image");
+  };
 
     function createTarget() {
       console.log("Target created");
@@ -182,83 +196,57 @@
           crosshairSize
         );
       }
+    };
+
+let activeBloodSpots = [];
+
+function showBlood(x, y) {
+  console.log("Attempting to show blood at", x, y);
+  const bloodDuration = 1500;
+
+  if (bloodImage.complete && bloodImage.naturalWidth !== 0) {
+    activeBloodSpots.push({x, y, endTime: Date.now() + bloodDuration});
+    console.log("Blood spot added to active list");
+  } else {
+    console.error("Blood image not ready or failed to load");
+  }
+}
+
+function drawBloodSpots() {
+  const currentTime = Date.now();
+  activeBloodSpots = activeBloodSpots.filter(spot => {
+    if (currentTime < spot.endTime) {
+      ctx.drawImage(bloodImage, spot.x, spot.y, 80, 80);
+      return true;
     }
+    return false;
+  });
+}
 
-  
-    // function checkHit(x, y) {
-    //   targets.forEach((target) => {
-    //     if (
-    //       x >= target.x &&
-    //       x <= target.x + target.width &&
-    //       y >= target.y &&
-    //       y <= target.y + target.height &&
-    //       !target.hit
-    //     ) {
-    //       setTimeout(() => {
-    //         target.hit = true;
-    //         score++;
-    //         document.getElementById("score").innerText = score;
-    //         targets.splice(targets.indexOf(target), 1);
-    //         if (score >= targetGoal) {
-    //           endGame(true);
-    //         }
-    //       }, 150);
-    //     }
-    //   });
-    // }
+  function checkHit(x, y) {
+    targets.forEach((target) => {
+      if (
+        x >= target.x &&
+        x <= target.x + target.width &&
+        y >= target.y &&
+        y <= target.y + target.height &&
+        !target.hit
+      ) {
+        target.hit = true;
+        score++;
+        document.getElementById("score").innerText = score;
 
-    const bloodImage = new Image();
-    bloodImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/Untitled_design__3_-removebg-preview.png?updatedAt=1726245472895";  // Replace with your blood image URL
+        splatSound.play();
 
-    function checkHit(x, y) {
-      targets.forEach((target) => {
-        if (
-          x >= target.x &&
-          x <= target.x + target.width &&
-          y >= target.y &&
-          y <= target.y + target.height &&
-          !target.hit
-        ) {
-          setTimeout(() => {
-            // Mark the bird as hit and update score
-            target.hit = true;
-            score++;
-            document.getElementById("score").innerText = score;
-
-            // Show blood image briefly
-            // showBlood(target.x, target.y);
-
-            // Remove the bird from the array
-            targets.splice(targets.indexOf(target), 1);
-
-            // End game if target goal is reached
-            if (score >= targetGoal) {
-              endGame(true);
-            }
-          }, 150);
+        showBlood(target.x, target.y);
+        console.log("Hit registered, blood shown");
+        targets.splice(targets.indexOf(target), 1);
+        if (score >= targetGoal) {
+          endGame(true);
         }
-      });
-    }
-
-    // Function to display the blood image briefly
-    function showBlood(x, y) {
-      console.log("blood image")
-      console.log(bloodImage)
-      const bloodDuration = 1000; // Time in milliseconds to display the blood image
-
-      // Save the current canvas state
-      ctx.save();
-
-      // Draw the blood image at the bird's location
-      ctx.drawImage(bloodImage, x, y, 40, 40); // Adjust size as needed
-
-      // Remove the blood image after a short delay
-      setTimeout(() => {
-        // Clear only the blood image, but restore the previous state of the canvas
-        ctx.restore();
-      }, bloodDuration);
-    }
-
+      }
+    });
+  }
   
     canvas.addEventListener("mousemove", (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -316,15 +304,16 @@
       document.querySelector(".message").style.display = "none";
       startGame();
     });
-  
+
     function drawGame() {
-      if (!isGameOver) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawTargets();
-        drawCrosshair();
-        requestAnimationFrame(drawGame);
-      }
+    if (!isGameOver) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawTargets();
+      drawBloodSpots();
+      drawCrosshair();
+      requestAnimationFrame(drawGame);
     }
+  }
 
     function startGame() {
       console.log("Game started");

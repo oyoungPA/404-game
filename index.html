@@ -17,6 +17,10 @@
         background-position: 0 center;
       }
     }
+
+  canvas {
+  cursor: none;
+  }
   
     .message {
       display: none;
@@ -99,12 +103,19 @@
   </div>
   
   <script>
+  function initGame() {
+    console.log("Initializing game");
+    
     const canvas = document.getElementById("gameCanvas");
+    if (!canvas) {
+      console.error("Canvas element not found");
+      return;
+    }
     const ctx = canvas.getContext("2d");
-  
+
     canvas.width = 800;
     canvas.height = 400;
-  
+
     let targets = [];
     let score = 0;
     let isGameOver = false;
@@ -112,12 +123,21 @@
     let timeLeft = 15;
     let targetCount = 0;
     const targetGoal = 10;
-  
+
     const duckImage = new Image();
-    duckImage.src =
-      "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846";
-  
+    duckImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846";
+
+    duckImage.onload = function() {
+      console.log("Duck image loaded");
+      startGame();
+    };
+
+    duckImage.onerror = function() {
+      console.error("Failed to load duck image");
+    };
+
     function createTarget() {
+      console.log("Target created");
       const target = {
         x: Math.random() * (canvas.width - 50),
         y: Math.random() * (canvas.height - 50),
@@ -126,11 +146,11 @@
         hit: false,
         lifespan: Math.random() * 1500 + 1000,
       };
-  
+
       targets.push(target);
       setTimeout(() => removeTarget(target), target.lifespan);
     }
-  
+
     function removeTarget(target) {
       if (!target.hit) {
         const index = targets.indexOf(target);
@@ -139,32 +159,57 @@
         }
       }
     }
-  
+
     function drawTargets() {
       targets.forEach((target) => {
         if (!target.hit) {
-          ctx.drawImage(
-            duckImage,
-            target.x,
-            target.y,
-            target.width,
-            target.height,
-          );
+          ctx.drawImage(duckImage, target.x, target.y, target.width, target.height);
         }
       });
     }
-  
+
+    const crosshairImage = new Image();
+    crosshairImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/ACSS-RAPTOR-M2-removebg-preview.png?updatedAt=1726176832029";
+
     function drawCrosshair() {
-      ctx.strokeStyle = "white";
-      ctx.beginPath();
-      ctx.arc(crosshair.x, crosshair.y, 15, 0, Math.PI * 2);
-      ctx.moveTo(crosshair.x - 20, crosshair.y);
-      ctx.lineTo(crosshair.x + 20, crosshair.y);
-      ctx.moveTo(crosshair.x, crosshair.y - 20);
-      ctx.lineTo(crosshair.x, crosshair.y + 20);
-      ctx.stroke();
+      if (crosshairImage.complete) {
+        const crosshairSize = 30;
+        ctx.drawImage(
+          crosshairImage,
+          crosshair.x - crosshairSize / 2,
+          crosshair.y - crosshairSize / 2,
+          crosshairSize,
+          crosshairSize
+        );
+      }
     }
+
   
+    // function checkHit(x, y) {
+    //   targets.forEach((target) => {
+    //     if (
+    //       x >= target.x &&
+    //       x <= target.x + target.width &&
+    //       y >= target.y &&
+    //       y <= target.y + target.height &&
+    //       !target.hit
+    //     ) {
+    //       setTimeout(() => {
+    //         target.hit = true;
+    //         score++;
+    //         document.getElementById("score").innerText = score;
+    //         targets.splice(targets.indexOf(target), 1);
+    //         if (score >= targetGoal) {
+    //           endGame(true);
+    //         }
+    //       }, 150);
+    //     }
+    //   });
+    // }
+
+    const bloodImage = new Image();
+    bloodImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/Untitled_design__3_-removebg-preview.png?updatedAt=1726245472895";  // Replace with your blood image URL
+
     function checkHit(x, y) {
       targets.forEach((target) => {
         if (
@@ -175,10 +220,18 @@
           !target.hit
         ) {
           setTimeout(() => {
+            // Mark the bird as hit and update score
             target.hit = true;
             score++;
             document.getElementById("score").innerText = score;
+
+            // Show blood image briefly
+            // showBlood(target.x, target.y);
+
+            // Remove the bird from the array
             targets.splice(targets.indexOf(target), 1);
+
+            // End game if target goal is reached
             if (score >= targetGoal) {
               endGame(true);
             }
@@ -186,6 +239,26 @@
         }
       });
     }
+
+    // Function to display the blood image briefly
+    function showBlood(x, y) {
+      console.log("blood image")
+      console.log(bloodImage)
+      const bloodDuration = 1000; // Time in milliseconds to display the blood image
+
+      // Save the current canvas state
+      ctx.save();
+
+      // Draw the blood image at the bird's location
+      ctx.drawImage(bloodImage, x, y, 40, 40); // Adjust size as needed
+
+      // Remove the blood image after a short delay
+      setTimeout(() => {
+        // Clear only the blood image, but restore the previous state of the canvas
+        ctx.restore();
+      }, bloodDuration);
+    }
+
   
     canvas.addEventListener("mousemove", (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -224,7 +297,6 @@
         }
       }, 1000);
     }
-  
     function endGame(won) {
       isGameOver = true;
       document.querySelector(".message").style.display = "block";
@@ -253,18 +325,14 @@
         requestAnimationFrame(drawGame);
       }
     }
-  
+
     function startGame() {
-      if (duckImage.complete) {
-        initializeGame();
-      } else {
-        duckImage.onload = () => {
-          initializeGame();
-        };
-      }
+      console.log("Game started");
+      initializeGame();
     }
-  
+
     function initializeGame() {
+      console.log("Game initialized");
       score = 0;
       timeLeft = 15;
       isGameOver = false;
@@ -272,13 +340,25 @@
       document.getElementById("score").innerText = score;
       canvas.style.display = "block";
       document.querySelector(".message").style.display = "none";
-  
+
       startTimer();
       createTarget();
       setInterval(createTarget, 1000);
       drawGame();
     }
-  
-    window.onload = startGame;
+
+    const restartButton = document.getElementById("restartButton");
+    if (restartButton) {
+      restartButton.addEventListener("click", startGame);
+    } else {
+      console.error("Restart button not found");
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initGame);
+  } else {
+    initGame();
+  }
   </script>
   

@@ -1,353 +1,429 @@
 <style>
     #gameCanvas {
-      margin: 20px auto;
-      display: block;
-      background-image: url("https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/DALL_E%202024-09-12%2009.25.18%20-%20A%20retro%208-bit%20style%20background%20for%20a%20duck%20hunting%20game%20similar%20to%20classic%20arcade%20style.%20The%20scene%20features%20a%20bright%20blue%20sky%20with%20no%20clouds,%20a%20few%20sim.webp?updatedAt=1726151927915");
-      background-size: 108%;
-      background-position: 0 center;
-      background-repeat: repeat-x;
-      animation: moveBackground 16s linear infinite;
-    }
-  
-    @keyframes moveBackground {
-      0% {
-        background-position: 100% center;
-      }
-      100% {
+        margin: 0 auto;
+        display: block;
+        background-image: url("https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/DALL_E%202024-09-12%2009.25.18%20-%20A%20retro%208-bit%20style%20background%20for%20a%20duck%20hunting%20game%20similar%20to%20classic%20arcade%20style.%20The%20scene%20features%20a%20bright%20blue%20sky%20with%20no%20clouds,%20a%20few%20sim.webp?updatedAt=1726151927915");
+        background-size: 800px;
         background-position: 0 center;
-      }
+        background-repeat: repeat-x;
+        animation: moveBackground 16s linear infinite;
+        border-radius: 5px;
     }
 
-  canvas {
-  cursor: none;
-  }
-  
+    @keyframes moveBackground {
+        0% {
+            background-position: 100% center;
+        }
+
+        100% {
+            background-position: 0 center;
+        }
+    }
+
+    canvas {
+        cursor: none;
+    }
+
+    .shop-btns {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        margin: 20px auto;
+        max-width: 800px;
+        gap: 30px;
+    }
+
+    .image-button {
+        max-width: 300px;
+        height: 70px;
+        background-image: url('https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/media%20(2).webp?updatedAt=1726516779209');
+        background-size: cover;
+        background-position: center;
+        border: none;
+        position: relative;
+        cursor: pointer;
+        flex-grow: 1;
+        border-radius: 5px;
+    }
+
+    .button-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+        pointer-events: none;
+    }
+
     .message {
-      display: none;
+        display: none;
     }
+
     .ui {
-      margin-top: 10px;
+        margin-top: 10px;
+        display: flex;
+        justify-content: center;
     }
+
     .ui .score,
     .ui #timer {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 10px;
-      color: black;
+        font-size: 20px;
+        font-weight: bold;
+        margin: 10px;
+        color: black;
     }
-  
+
+    .wild-text {
+        margin-bottom: 20px;
+    }
+
     body {
-      margin: 0;
-      padding: 0;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-      flex-direction: column;
-      text-align: center;
-      margin: 0;
-      padding: 0;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        flex-direction: column;
+        text-align: center;
+        margin: 0;
+        padding: 0;
     }
-  
+
     .game-container {
-      text-align: center;
+        text-align: center;
     }
-  
+
+    .not-found {
+        margin-top: 20px;
+    }
+
     canvas {
-      border: 2px solid #fff;
+        border: 2px solid #fff;
     }
-  
+
     h1 {
-      margin-bottom: 10px;
-      font-size: 2rem;
+        margin-bottom: 10px;
+        font-size: 2rem;
     }
-  
+
     .message {
-      display: none;
-      margin-top: 20px;
-      color: black;
+        display: none;
+        color: black;
     }
-  
+
     #restartButton,
     #homeButton {
-      margin-top: 10px;
-      padding: 10px 20px;
-      background-color: #cc0c2c;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      text-decoration: none;
+        margin-top: 40px;
+        padding: 10px 20px;
+        background-color: #cc0c2c;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+        font-weight: bold;
     }
-  
+
+    .shop-button {
+        height: 70px;
+        width: 200px;
+    }
+
     #restartButton:hover,
     #homeButton:hover {
-      background-color: pink;
+        background-color: pink;
     }
-  </style>
-  
-  <h1>404 Page</h1>
-  
-  <canvas id="gameCanvas"></canvas>
-  
-  <div class="ui">
+
+    @media (max-width: 576px) {
+        .wild-text {
+            padding: 20px;
+        }
+
+        .shop-btns {
+            flex-direction: column;
+            margin: 0 auto;
+            align-items: center;
+            width: 100%;
+        }
+
+        .image-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<h1 class="not-found">Oops, page not found!</h1>
+<h3 class="wild-text">Looks like you're caught in the wild.</h3>
+
+<canvas id="gameCanvas"></canvas>
+
+<div class="ui">
     <div class="score">Targets hit: <span id="score">0</span></div>
     <div id="timer">Time left: 15s</div>
-  </div>
-  
-  <div class="message">
+</div>
+
+<div class="message">
     <h2></h2>
     <button id="restartButton">Try Again</button>
-  </div>
-  
-  <script>
-  function initGame() {
-    console.log("Initializing game");
-    
-    const canvas = document.getElementById("gameCanvas");
-    if (!canvas) {
-      console.error("Canvas element not found");
-      return;
-    }
-    const ctx = canvas.getContext("2d");
+</div>
+<div class="shop-btns">
+    <button class="image-button">
+        <span class="button-text">Shop Top Brands</span>
+    </button>
 
-    canvas.width = 800;
-    canvas.height = 400;
+    <button class="image-button">
+        <span class="button-text">Shop Top Brands</span>
+    </button>
 
-    let targets = [];
-    let score = 0;
-    let isGameOver = false;
-    let crosshair = { x: 0, y: 0 };
-    let timeLeft = 15;
-    let targetCount = 0;
-    const targetGoal = 10;
+    <button class="image-button">
+        <span class="button-text">Shop Top Brands</span>
+    </button>
 
-    const duckImage = new Image();
-    duckImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846";
+</div>
 
-    const splatSound = new Audio("https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/splat2.m4a?updatedAt=1726263855116");
 
-    duckImage.onload = function() {
-      console.log("Duck image loaded");
-      startGame();
-    };
+<script>
+    function initGame() {
 
-    duckImage.onerror = function() {
-      console.error("Failed to load duck image");
-    };
-
-    
-  const bloodImage = new Image();
-  bloodImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/Untitled_design__3_-removebg-preview.png?updatedAt=1726245472895";
-
-  bloodImage.onload = function() {
-    console.log("Blood image loaded successfully");
-  };
-
-  bloodImage.onerror = function() {
-    console.error("Failed to load blood image");
-  };
-
-    function createTarget() {
-      console.log("Target created");
-      const target = {
-        x: Math.random() * (canvas.width - 50),
-        y: Math.random() * (canvas.height - 50),
-        width: 40,
-        height: 40,
-        hit: false,
-        lifespan: Math.random() * 1500 + 1000,
-      };
-
-      targets.push(target);
-      setTimeout(() => removeTarget(target), target.lifespan);
-    }
-
-    function removeTarget(target) {
-      if (!target.hit) {
-        const index = targets.indexOf(target);
-        if (index > -1) {
-          targets.splice(index, 1);
+        const canvas = document.getElementById("gameCanvas");
+        if (!canvas) {
+            console.error("Canvas element not found");
+            return;
         }
-      }
-    }
+        const ctx = canvas.getContext("2d");
 
-    function drawTargets() {
-      targets.forEach((target) => {
-        if (!target.hit) {
-          ctx.drawImage(duckImage, target.x, target.y, target.width, target.height);
+        canvas.width = 800;
+        canvas.height = 350;
+
+        let targets = [];
+        let score = 0;
+        let isGameOver = false;
+        let crosshair = { x: 0, y: 0 };
+        let timeLeft = 15;
+        let targetCount = 0;
+        const targetGoal = 10;
+
+        const duckImage = new Image();
+        duckImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/thumbnail_11B89952-B596-48B1-A738-8C14B65E2F49-removebg-preview.png?updatedAt=1726163578846";
+
+        const splatSound = new Audio("https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/splat2.m4a?updatedAt=1726263855116");
+
+        duckImage.onload = function () {
+            startGame();
+        };
+
+        duckImage.onerror = function () {
+            console.error("Failed to load duck image");
+        };
+
+
+        const bloodImage = new Image();
+        bloodImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/Untitled_design__3_-removebg-preview.png?updatedAt=1726245472895";
+
+        bloodImage.onload = function () {
+        };
+
+        bloodImage.onerror = function () {
+            console.error("Failed to load blood image");
+        };
+
+        function createTarget() {
+            const target = {
+                x: Math.random() * (canvas.width - 50),
+                y: Math.random() * (canvas.height - 50),
+                width: 40,
+                height: 40,
+                hit: false,
+                lifespan: Math.random() * 1500 + 1000,
+            };
+
+            targets.push(target);
+            setTimeout(() => removeTarget(target), target.lifespan);
         }
-      });
-    }
 
-    const crosshairImage = new Image();
-    crosshairImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/ACSS-RAPTOR-M2-removebg-preview.png?updatedAt=1726176832029";
-
-    function drawCrosshair() {
-      if (crosshairImage.complete) {
-        const crosshairSize = 30;
-        ctx.drawImage(
-          crosshairImage,
-          crosshair.x - crosshairSize / 2,
-          crosshair.y - crosshairSize / 2,
-          crosshairSize,
-          crosshairSize
-        );
-      }
-    };
-
-let activeBloodSpots = [];
-
-function showBlood(x, y) {
-  console.log("Attempting to show blood at", x, y);
-  const bloodDuration = 1500;
-
-  if (bloodImage.complete && bloodImage.naturalWidth !== 0) {
-    activeBloodSpots.push({x, y, endTime: Date.now() + bloodDuration});
-    console.log("Blood spot added to active list");
-  } else {
-    console.error("Blood image not ready or failed to load");
-  }
-}
-
-function drawBloodSpots() {
-  const currentTime = Date.now();
-  activeBloodSpots = activeBloodSpots.filter(spot => {
-    if (currentTime < spot.endTime) {
-      ctx.drawImage(bloodImage, spot.x, spot.y, 80, 80);
-      return true;
-    }
-    return false;
-  });
-}
-
-  function checkHit(x, y) {
-    targets.forEach((target) => {
-      if (
-        x >= target.x &&
-        x <= target.x + target.width &&
-        y >= target.y &&
-        y <= target.y + target.height &&
-        !target.hit
-      ) {
-        target.hit = true;
-        score++;
-        document.getElementById("score").innerText = score;
-
-        splatSound.play();
-
-        showBlood(target.x, target.y);
-        console.log("Hit registered, blood shown");
-        targets.splice(targets.indexOf(target), 1);
-        if (score >= targetGoal) {
-          endGame(true);
+        function removeTarget(target) {
+            if (!target.hit) {
+                const index = targets.indexOf(target);
+                if (index > -1) {
+                    targets.splice(index, 1);
+                }
+            }
         }
-      }
-    });
-  }
-  
-    canvas.addEventListener("mousemove", (e) => {
-      const rect = canvas.getBoundingClientRect();
-      crosshair.x = e.clientX - rect.left;
-      crosshair.y = e.clientY - rect.top;
-    });
-  
-    canvas.addEventListener("click", (e) => {
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-  
-      simulateShot(x, y);
-      checkHit(x, y);
-    });
-  
-    function simulateShot(x, y) {
-      ctx.fillStyle = "yellow";
-      ctx.beginPath();
-      ctx.arc(x, y, 5, 0, Math.PI * 2);
-      ctx.fill();
-  
-      setTimeout(() => {
-        ctx.clearRect(x - 6, y - 6, 12, 12);
-      }, 200);
-    }
-  
-    function startTimer() {
-      const timerInterval = setInterval(() => {
-        if (timeLeft > 0) {
-          timeLeft--;
-          document.getElementById("timer").innerText = `Time left: ${timeLeft}s`;
+
+        function drawTargets() {
+            targets.forEach((target) => {
+                if (!target.hit) {
+                    ctx.drawImage(duckImage, target.x, target.y, target.width, target.height);
+                }
+            });
+        }
+
+        const crosshairImage = new Image();
+        crosshairImage.src = "https://image.primaryarms.com/images/primary-arms/landing-pages/404-game/ACSS-RAPTOR-M2-removebg-preview.png?updatedAt=1726176832029";
+
+        function drawCrosshair() {
+            if (crosshairImage.complete) {
+                const crosshairSize = 30;
+                ctx.drawImage(
+                    crosshairImage,
+                    crosshair.x - crosshairSize / 2,
+                    crosshair.y - crosshairSize / 2,
+                    crosshairSize,
+                    crosshairSize
+                );
+            }
+        };
+
+        let activeBloodSpots = [];
+
+        function showBlood(x, y) {
+            const bloodDuration = 1500;
+
+            if (bloodImage.complete && bloodImage.naturalWidth !== 0) {
+                activeBloodSpots.push({ x, y, endTime: Date.now() + bloodDuration });
+            } else {
+                console.error("Blood image not ready or failed to load");
+            }
+        }
+
+        function drawBloodSpots() {
+            const currentTime = Date.now();
+            activeBloodSpots = activeBloodSpots.filter(spot => {
+                if (currentTime < spot.endTime) {
+                    ctx.drawImage(bloodImage, spot.x, spot.y, 80, 80);
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        function checkHit(x, y) {
+            targets.forEach((target) => {
+                if (
+                    x >= target.x &&
+                    x <= target.x + target.width &&
+                    y >= target.y &&
+                    y <= target.y + target.height &&
+                    !target.hit
+                ) {
+                    target.hit = true;
+                    score++;
+                    document.getElementById("score").innerText = score;
+
+                    splatSound.play();
+
+                    showBlood(target.x, target.y);
+                    targets.splice(targets.indexOf(target), 1);
+                    if (score >= targetGoal) {
+                        endGame(true);
+                    }
+                }
+            });
+        }
+
+        canvas.addEventListener("mousemove", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            crosshair.x = e.clientX - rect.left;
+            crosshair.y = e.clientY - rect.top;
+        });
+
+        canvas.addEventListener("click", (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            simulateShot(x, y);
+            checkHit(x, y);
+        });
+
+        function simulateShot(x, y) {
+            ctx.fillStyle = "yellow";
+            ctx.beginPath();
+            ctx.arc(x, y, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            setTimeout(() => {
+                ctx.clearRect(x - 6, y - 6, 12, 12);
+            }, 200);
+        }
+
+        function startTimer() {
+            const timerInterval = setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    document.getElementById("timer").innerText = `Time left: ${timeLeft}s`;
+                } else {
+                    clearInterval(timerInterval);
+                    endGame(false);
+                }
+            }, 1000);
+        }
+        function endGame(won) {
+            isGameOver = true;
+            document.querySelector(".message").style.display = "block";
+            canvas.style.display = "none";
+            document.querySelector(".message h2").innerText = won
+                ? "You hit all targets!"
+                : "Time's up! Try again.";
+        }
+
+        document.getElementById("restartButton").addEventListener("click", () => {
+            score = 0;
+            timeLeft = 15;
+            isGameOver = false;
+            targets = [];
+            document.getElementById("score").innerText = score;
+            canvas.style.display = "block";
+            document.querySelector(".message").style.display = "none";
+            startGame();
+        });
+
+        function drawGame() {
+            if (!isGameOver) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawTargets();
+                drawBloodSpots();
+                drawCrosshair();
+                requestAnimationFrame(drawGame);
+            }
+        }
+
+        function startGame() {
+            initializeGame();
+        }
+
+        function initializeGame() {
+            score = 0;
+            timeLeft = 15;
+            isGameOver = false;
+            targets = [];
+            document.getElementById("score").innerText = score;
+            canvas.style.display = "block";
+            document.querySelector(".message").style.display = "none";
+
+            startTimer();
+            createTarget();
+            setInterval(createTarget, 1000);
+            drawGame();
+        }
+
+        const restartButton = document.getElementById("restartButton");
+        if (restartButton) {
+            restartButton.addEventListener("click", startGame);
         } else {
-          clearInterval(timerInterval);
-          endGame(false);
+            console.error("Restart button not found");
         }
-      }, 1000);
-    }
-    function endGame(won) {
-      isGameOver = true;
-      document.querySelector(".message").style.display = "block";
-      canvas.style.display = "none";
-      document.querySelector(".message h2").innerText = won
-        ? "You hit all targets!"
-        : "Time's up! Try again.";
-    }
-  
-    document.getElementById("restartButton").addEventListener("click", () => {
-      score = 0;
-      timeLeft = 15;
-      isGameOver = false;
-      targets = [];
-      document.getElementById("score").innerText = score;
-      canvas.style.display = "block";
-      document.querySelector(".message").style.display = "none";
-      startGame();
-    });
-
-    function drawGame() {
-    if (!isGameOver) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawTargets();
-      drawBloodSpots();
-      drawCrosshair();
-      requestAnimationFrame(drawGame);
-    }
-  }
-
-    function startGame() {
-      console.log("Game started");
-      initializeGame();
     }
 
-    function initializeGame() {
-      console.log("Game initialized");
-      score = 0;
-      timeLeft = 15;
-      isGameOver = false;
-      targets = [];
-      document.getElementById("score").innerText = score;
-      canvas.style.display = "block";
-      document.querySelector(".message").style.display = "none";
-
-      startTimer();
-      createTarget();
-      setInterval(createTarget, 1000);
-      drawGame();
-    }
-
-    const restartButton = document.getElementById("restartButton");
-    if (restartButton) {
-      restartButton.addEventListener("click", startGame);
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initGame);
     } else {
-      console.error("Restart button not found");
+        initGame();
     }
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initGame);
-  } else {
-    initGame();
-  }
-  </script>
-  
+</script>

@@ -374,34 +374,40 @@
         }
 
         function checkHit(x, y) {
-            targets.forEach((target) => {
-                if (
-                    x >= target.x &&
-                    x <= target.x + target.width &&
-                    y >= target.y &&
-                    y <= target.y + target.height &&
-                    !target.hit
-                ) {
-                    target.hit = true;
-                    score++;
-                    document.getElementById("score").innerText = score;
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const hitAreaExpansion = isTouchDevice ? 20 : 0;
 
-                    splatSound.play();
+    targets.forEach((target) => {
+        if (
+            x >= target.x - hitAreaExpansion &&
+            x <= target.x + target.width + hitAreaExpansion &&
+            y >= target.y - hitAreaExpansion &&
+            y <= target.y + target.height + hitAreaExpansion &&
+            !target.hit
+        ) {
+            target.hit = true;
+            score++;
+            document.getElementById("score").innerText = score;
 
-                    showBlood(target.x, target.y);
-                    targets.splice(targets.indexOf(target), 1);
-                    if (score >= targetGoal) {
-                        endGame(true);
-                    }
-                }
-            });
+            splatSound.play();
+
+            showBlood(target.x, target.y);
+            targets.splice(targets.indexOf(target), 1);
+            if (score >= targetGoal) {
+                endGame(true);
+            }
         }
+    });
+}
 
-        canvas.addEventListener("mousemove", (e) => {
-            const rect = canvas.getBoundingClientRect();
-            crosshair.x = e.clientX - rect.left;
-            crosshair.y = e.clientY - rect.top;
-        });
+canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
+    crosshair.x = (e.clientX - rect.left) * scaleX;
+    crosshair.y = (e.clientY - rect.top) * scaleY;
+});
 
         canvas.addEventListener("click", (e) => {
             const rect = canvas.getBoundingClientRect();
@@ -412,18 +418,24 @@
             checkHit(x, y);
         });
 
-        canvas.addEventListener("touchstart", (e) => {
-            e.preventDefault();
+canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
 
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
 
-            const x = touch.clientX - rect.left;
-            const y = touch.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-            simulateShot(x, y);
-            checkHit(x, y);
-        });
+    const x = (touch.clientX - rect.left) * scaleX;
+    const y = (touch.clientY - rect.top) * scaleY;
+
+    simulateShot(x, y);
+    checkHit(x, y);
+
+    crosshair.x = x;
+    crosshair.y = y;
+});
 
         function simulateShot(x, y) {
             ctx.fillStyle = "yellow";

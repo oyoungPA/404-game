@@ -412,6 +412,19 @@
             checkHit(x, y);
         });
 
+        canvas.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            simulateShot(x, y);
+            checkHit(x, y);
+        });
+
         function simulateShot(x, y) {
             ctx.fillStyle = "yellow";
             ctx.beginPath();
